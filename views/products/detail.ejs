@@ -1,0 +1,16 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main id="contenido" class="inner-main shell">
+  <div class="breadcrumbs"><a href="/">INICIO</a><span>/</span><a href="/#catalogo">CATÁLOGO</a><span>/</span><span id="breadcrumb-product"><%= product ? product.nombre.toUpperCase() : "PRODUCTO" %></span></div>
+  <div class="product-detail" id="detalle-contenido">
+    <div class="detail-photos"><div class="detail-hero-image"><img id="foto" src="<%= product ? product.imagen : "/img/p049.jpg" %>" alt="<%= product ? product.nombre : "Producto VisagShop" %>" width="560" height="700"></div><span class="photo-note">VISAGSHOP / STREETWEAR COLLECTION</span></div>
+    <div class="detail-info"><span class="kicker" id="categoria"><%= product ? product.categoria.toUpperCase() : "COLECCIÓN VISAGSHOP" %></span><h1 id="nombre"><%= product ? product.nombre : "PRODUCTO NO ENCONTRADO" %></h1><div class="detail-price" id="precio"><%= product && Number.isFinite(product.precio) ? money(product.precio) : "Precio por consultar" %></div><div class="detail-divider"></div><p class="detail-description" id="descripcion"><%= product && product.descripcion ? product.descripcion : "Una pieza para combinar con tu estilo. Las tallas y la disponibilidad final se confirman con el equipo de VisagShop." %></p>
+    <% if (product && Array.isArray(product.colores) && product.colores.length) { %><p class="detail-description"><strong>Colores:</strong> <%= product.colores.join(' · ') %></p><% } %>
+    <fieldset class="size-field" id="bloque-tallas"><legend>ELIGE TU TALLA <span id="talla-seleccionada"></span></legend><div class="opciones" id="tallas"></div></fieldset>
+    <div class="detail-actions"><button type="button" class="btn btn-dark btn-full" id="agregar">AÑADIR AL CARRITO <span>↗</span></button><a class="btn btn-outline-dark btn-full" id="wa" href="https://wa.me/message/MWVYODQ6ZZILP1" target="_blank" rel="noopener noreferrer">CONSULTAR POR WHATSAPP ↗</a></div>
+    <p class="detail-feedback" id="feedback" role="status" aria-live="polite"></p>
+    <div class="detail-extra"><div><strong>↗ &nbsp; Envíos en Colombia</strong><span>Confirma cobertura y valor con el asesor.</span></div><div><strong>◎ &nbsp; Atención personalizada</strong><span>Te ayudamos a confirmar disponibilidad.</span></div></div></div>
+  </div>
+  <div class="more-looks"><div class="section-heading"><div><span class="kicker">TAMBIÉN TE PUEDE GUSTAR</span><h2>COMPLETA TU <i>LOOK.</i></h2></div><a href="/#catalogo" class="text-cta">VER TODO ↗</a></div><div class="productos recommendations" id="recomendados"></div></div>
+</main>
+<%- include("../partials/footer") %>

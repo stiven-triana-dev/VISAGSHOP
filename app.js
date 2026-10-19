@@ -1,0 +1,85 @@
+'use strict';
+const express=require('express');
+const path=require('node:path');
+const app=express();
+const pages=require('./routes/pages');
+const admin=require('./routes/admin');
+const productRoutes=require('./routes/products');
+const accounts=require('./routes/accounts');
+const products=require('./models/activeProducts');
+const session=require('./middleware/activeSession');
+const db=require('./cloud/db');
+const wrap=require('./middleware/asyncHandler');
+const store=require('./storage');
+const {notFound}=require('./controllers/pageController');
+const PORT=Number(process.env.PORT)||3000;
+const cloud=Boolean(process.env.DATABASE_URL);
+const production=process.env.NODE_ENV==='production';
+if(production&&!cloud)throw Error('No es seguro iniciar VisagShop en hosting gratuito sin DATABASE_URL de Neon.');
+if(!cloud)store.setup();
+app.set('trust proxy',1);
+app.disable('x-powered-by');
+app.set('views',path.join(__dirname,'views'));
+app.set('view engine','ejs');
+app.use((req,res,next)=>{
+ res.locals.isHome=false;res.locals.isCheckout=false;res.locals.isAdmin=false;res.locals.pageScript='';res.locals.pageTitle='VisagShop';
+ res.locals.whatsappNumber=/^\d{8,15}$/.test(process.env.WHATSAPP_NUMBER||'')?process.env.WHATSAPP_NUMBER:'';
+ res.set('X-Content-Type-Options','nosniff');
+ res.set('Referrer-Policy','strict-origin-when-cross-origin');
+ res.set('X-Frame-Options','DENY');
+ res.set('X-Permitted-Cross-Domain-Policies','none');
+ res.set('Permissions-Policy','camera=(), microphone=(), geolocation=()');
+ res.set('Content-Security-Policy',"default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; media-src 'self'");
+ if(production)res.set('Strict-Transport-Security','max-age=31536000');
+ next();
+});
+app.use(express.json({limit:'5mb',type:'application/json'}));
+app.use(express.urlencoded({extended:false,limit:'100kb'}));
+app.get('/health',wrap(async(req,res)=>{
+ if(cloud)await db.query('SELECT 1');
+ else{
+  const fs=require('node:fs');fs.accessSync(path.join(store.dataDir,'products.json'),fs.constants.R_OK|fs.constants.W_OK);
+  fs.accessSync(path.join(store.dataDir,'users.json'),fs.constants.R_OK|fs.constants.W_OK);
+ }
+ res.set('Cache-Control','no-store').json({status:'ok'});
+}));
+// Archivos públicos antes de identificar usuarios: evita consultas a Neon por cada
+// CSS, JS y fotografía, importante para cuotas gratuitas.
+if(cloud){
+ app.get('/img/uploads/:filename',wrap(async(req,res)=>{
+  const match=/^([a-f0-9-]{36})\.(?:jpg|png|webp)$/.exec(req.params.filename);
+  if(!match)return res.sendStatus(404);
+  const file=await products.image(match[1]);
+  if(!file)return res.sendStatus(404);
+  res.set('Cache-Control','public, max-age=3600');
+  res.type(file.mime).send(file.image_bytes);
+ }));
+}else app.use('/img/uploads',express.static(store.uploadDir,{index:false,dotfiles:'deny',maxAge:'1h'}));
+app.use(express.static(path.join(__dirname,'public'),{index:false,dotfiles:'deny'}));
+app.use(session.attach);
+app.get('/api/products',wrap(async(req,res)=>res.set('Cache-Control','no-store').json(await products.all())));
+app.get('/api/products/:id',wrap(async(req,res)=>{
+ const product=await products.find(req.params.id);
+ if(!product)return res.status(404).json({ok:false,error:'Producto no encontrado.'});
+ res.set('Cache-Control','no-store').json(product);
+}));
+app.get('/data/products.json',wrap(async(req,res)=>res.set('Cache-Control','no-store').json(await products.all())));
+app.use('/api/account',accounts);
+app.use('/admin',admin);
+app.use('/products',productRoutes);
+app.use('/',pages);
+app.use(notFound);
+app.use((err,req,res,next)=>{
+ console.error(`Solicitud ${req.method} ${req.path}:`,err.message);
+ if(res.headersSent)return next(err);
+ const status=err.type==='entity.too.large'?413:503;
+ if(req.path==='/health')return res.status(503).json({status:'unavailable'});
+ if(req.path.startsWith('/api/')||['POST','PUT','DELETE'].includes(req.method))return res.status(status).json({ok:false,error:'Servicio temporalmente no disponible. Intenta de nuevo.'});
+ res.status(status).type('text/plain').send('La tienda está temporalmente no disponible. Intenta nuevamente.');
+});
+async function start(){
+ if(cloud)await db.initialize();
+ return app.listen(PORT,'0.0.0.0',()=>console.log(`VisagShop: puerto ${PORT} (${cloud?'Neon PostgreSQL':'JSON local'})`));
+}
+if(require.main===module)start().catch(err=>{console.error('Error al iniciar la tienda:',err.message);process.exitCode=1;});
+module.exports={app,start};

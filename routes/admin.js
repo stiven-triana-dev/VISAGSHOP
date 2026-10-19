@@ -1,0 +1,18 @@
+'use strict';
+const express=require('express');
+const controller=require('../controllers/adminController');
+const authenticate=require('../middleware/adminAuth');
+const sameOrigin=require('../middleware/writeOrigin');
+const limitRequests=require('../middleware/limitRequests');
+const router=express.Router();
+const wrap=require('../middleware/asyncHandler');
+router.use(limitRequests({max:100,windowMs:15*60*1000,namespace:'admin'}));
+router.use(authenticate);
+router.get('/',(req,res)=>res.redirect('/admin/products'));
+router.get('/products',wrap(controller.list));
+router.get('/products/new',wrap(controller.newForm));
+router.get('/products/:id/edit',wrap(controller.editForm));
+router.post('/api/products',sameOrigin,wrap(controller.create));
+router.put('/api/products/:id',sameOrigin,wrap(controller.update));
+router.delete('/api/products/:id',sameOrigin,wrap(controller.remove));
+module.exports=router;

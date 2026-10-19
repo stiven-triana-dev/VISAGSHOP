@@ -1,0 +1,14 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="contenido" class="inner-main shell sprint4-list">
+ <div class="breadcrumbs"><a href="/">INICIO</a><span>/</span><span>PRODUCTOS</span></div>
+ <div class="page-title"><span class="kicker">VISAGSHOP / COLECCIÓN</span><h1>Todos los <i>productos.</i></h1><p>Explora nuestro catálogo actualizado directamente desde los datos de la tienda.</p></div>
+ <p class="sprint4-list-intro"><%= products.length %> referencias · Los precios y la disponibilidad final se confirman con VisagShop.</p>
+ <div class="productos sprint4-grid">
+ <% products.forEach(function(p,index){ %>
+  <%- include('../partials/productCard',{p,index,money}) %>
+ <% }) %>
+ </div>
+ <div class="sprint4-list-end"><a href="/" class="btn btn-outline-dark">VOLVER A LA TIENDA ↗</a></div>
+</main>
+<%- include('../partials/footer') %>

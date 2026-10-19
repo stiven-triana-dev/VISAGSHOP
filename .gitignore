@@ -1,0 +1,23 @@
+node_modules/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+.DS_Store
+# Solo semillas de catálogo, nunca bases de datos reales de clientes
+data/users.json
+data/sessions.json
+data/.sessions-*.tmp
+data/.users-*.tmp
+data/.products-*.tmp
+public/img/uploads/*
+!public/img/uploads/.gitkeep
+
+# Credentials / local mutable data
+.env
+.env.*
+!.env.example
+node_modules/
+data/sessions.json
+data/users.json
+public/img/uploads/

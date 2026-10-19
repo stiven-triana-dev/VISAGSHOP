@@ -1,0 +1,32 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="contenido" class="shell admin-main">
+  <div class="admin-crumb"><a href="/">Tienda</a><span>/</span><a href="/admin/products">Administración</a><span>/</span><%= mode==='new'?'Nuevo producto':'Editar '+product.id.toUpperCase() %></div>
+  <div class="admin-top admin-top-form"><div><span class="admin-kicker">ADMINISTRACIÓN / <%= mode==='new'?'CREACIÓN':'EDICIÓN' %></span><h1><%= mode==='new'?'Nueva':'Edita la' %> <em>prenda.</em></h1><p>Completa la información que verá el cliente en el catálogo de VisagShop.</p></div><a href="/admin/products" class="admin-secondary">← VOLVER AL LISTADO</a></div>
+  <div class="admin-editor-grid">
+    <section class="admin-panel admin-editor">
+      <form id="admin-product-form" data-mode="<%= mode %>" data-id="<%= product?.id||'' %>">
+        <div class="admin-form-heading"><span>01</span><h2>Información principal</h2></div>
+        <label class="admin-field">Nombre del producto <span>*</span><input name="nombre" required minlength="3" maxlength="120" value="<%= product?.nombre||'' %>" placeholder="Ej. Jean baggy azul lavado"></label>
+        <label class="admin-field">Descripción<textarea name="descripcion" maxlength="1000" rows="4" placeholder="Describe el diseño, material y características."><%= product?.descripcion||'' %></textarea></label>
+        <div class="admin-field-grid">
+          <label class="admin-field">Categoría <span>*</span><select name="categoria" required><option value="" disabled <%= !product?'selected':'' %>>Seleccionar categoría</option><% categories.forEach(function(c){ %><option value="<%= c %>" <%= product?.categoria===c?'selected':'' %>><%= c %></option><% }) %></select></label>
+          <label class="admin-field">Precio (COP)<input name="precio" type="number" min="0" max="999999999" step="1" value="<%= product?.precio??'' %>" placeholder="Ej. 130000"><small>Si no está definido, déjalo vacío para mostrar «Por consultar».</small></label>
+        </div>
+        <div class="admin-field-grid">
+          <label class="admin-field">Tallas<input name="tallas" value="<%= (product?.tallas||[]).join(', ') %>" placeholder="Ej. S, M, L, XL"><small>Separa las tallas con comas.</small></label>
+          <label class="admin-field">Colores<input name="colores" value="<%= (product?.colores||[]).join(', ') %>" placeholder="Ej. Negro, Gris, Azul"><small>Separa los colores con comas.</small></label>
+        </div>
+        <div class="admin-form-heading"><span>02</span><h2>Fotografía del producto</h2></div>
+        <label class="admin-image-field" for="imagen-input"><strong>Selecciona una fotografía</strong><span>JPG, PNG o WebP · Máximo 3 MB<% if(mode==='edit'){ %> · Dejar vacío conserva la actual<% } %></span><input id="imagen-input" type="file" name="imagen" accept="image/jpeg,image/png,image/webp" <%= mode==='new'?'required':'' %>></label>
+        <div id="admin-feedback" class="admin-feedback" role="status" aria-live="polite"></div>
+        <div class="admin-form-actions"><button class="admin-primary" type="submit" id="guardar-producto"><%= mode==='new'?'CREAR PRODUCTO':'GUARDAR CAMBIOS' %> ↗</button><a href="/admin/products" class="admin-secondary">CANCELAR</a></div>
+      </form>
+    </section>
+    <aside class="admin-preview"><div class="admin-preview-top">VISTA PREVIA DE LA PRENDA<span>VISAG / STUDIO</span></div>
+      <div class="admin-preview-image"><img id="imagen-preview" src="<%= product?.imagen||'/img/p049.jpg' %>" alt="Vista previa de fotografía" loading="lazy"></div>
+      <div class="admin-preview-body"><small>COLECCIÓN VISAGSHOP</small><strong id="preview-nombre"><%= product?.nombre||'Nombre de tu nueva prenda' %></strong><span id="preview-precio"><%= Number.isFinite(product?.precio)?money(product.precio):'Precio por consultar' %></span><p>Vista previa orientativa. Guardar publicará los cambios en el catálogo.</p></div>
+    </aside>
+  </div>
+</main>
+<%- include('../partials/footer') %>

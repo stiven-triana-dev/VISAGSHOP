@@ -1,0 +1,24 @@
+<% if (isCheckout) { %>
+<header class="checkout-header">
+    <div class="shell checkout-header-inner">
+      <a href="/" class="checkout-brand" aria-label="VisagShop, ir al inicio"><img src="/img/logo-visagshop.png" alt="" width="48" height="48"><span class="checkout-wordmark">VISAG<span>SHOP</span><small>STREETWEAR / COLOMBIA</small></span></a>
+      <div class="checkout-header-end"><span class="checkout-safe"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Pedido coordinado por WhatsApp</span><a class="checkout-back" href="/">Volver a la tienda <span aria-hidden="true">↗</span></a></div>
+    </div>
+  </header>
+<% } else { %>
+<div class="promo"><span class="promo-full">VISAGSHOP · STREETWEAR DESDE LEBRIJA &nbsp; / &nbsp; VENTAS AL DETAL Y POR MAYOR &nbsp; / &nbsp; ENVÍOS NACIONALES POR CONFIRMAR</span><span class="promo-mobile-text">ROPA URBANA · LEBRIJA, COLOMBIA</span></div>
+  <header class="site-header">
+    <div class="header-inner shell">
+      <a class="brand brand--logo" href="/" aria-label="VisagShop: volver al inicio"><img class="brand-mark" src="/img/logo-visagshop.png" alt="" width="42" height="42"><span class="brand-wordmark">VISAG<span>SHOP</span><span class="brand-period">®</span></span></a>
+      <nav class="nav-main" id="nav-principal" aria-label="Navegación principal">
+        <a href="<%= isHome ? '#catalogo' : '/#catalogo' %>">Catálogo</a><a href="<%= isHome ? '#categorias' : '/#categorias' %>">Categorías</a><a href="/#mayoristas">Mayoristas</a><a href="/#contacto">Contacto</a>
+        <% if (customer) { %><a class="mobile-account" href="/profile">Mi perfil</a><button type="button" id="cerrar-sesion-mobile" class="mobile-account mobile-logout">Cerrar sesión</button><% } else { %><a class="mobile-account" href="/login">Mi cuenta</a><% } %>
+      </nav>
+      <div class="header-actions">
+        <% if (customer) { %><span class="account-chip" title="Sesión iniciada"><a href="/profile" class="profile-header-link">Hola, <%= customer.firstName %> · Mi perfil</a> <button class="account-logout" type="button" id="cerrar-sesion">Salir</button></span><% } else { %><a class="account-link" href="/login" aria-label="Mi cuenta"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.2-4 3-6 7-6s6.8 2 7 6"/></svg><span>Ingresar</span></a><% } %>
+        <a href="/productCart" class="bag-link" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 8.5h15l-1 12h-13l-1-12Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count" data-cart-count hidden>0</span></a>
+        <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-principal"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+<% } %>

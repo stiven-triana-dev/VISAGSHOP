@@ -1,0 +1,21 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="contenido" class="shell admin-main">
+  <div class="admin-crumb"><a href="/">Tienda</a><span>/</span>Panel de productos</div>
+  <div class="admin-top">
+    <div><span class="admin-kicker">PANEL / CRUD DE PRODUCTOS</span><h1>Gestiona la <em>colección.</em></h1><p>Actualiza referencias, tallas y precios. Los cambios se publican en el catálogo al guardar.</p></div>
+    <a class="admin-primary" href="/products/create">+ AÑADIR PRODUCTO</a>
+  </div>
+  <div class="admin-stats"><div><small>REFERENCIAS</small><strong id="admin-count-products"><%= products.length %></strong></div><div><small>CON PRECIO</small><strong><%= products.filter(p=>Number.isFinite(p.precio)).length %></strong></div><div><small>PRECIO POR DEFINIR</small><strong><%= products.filter(p=>!Number.isFinite(p.precio)).length %></strong></div><div><small>CON TALLAS</small><strong><%= products.filter(p=>p.tallas?.length).length %></strong></div></div>
+  <section class="admin-panel">
+    <div class="admin-panel-heading"><div><h2>Productos publicados</h2><span>Los productos antiguos pueden editarse sin perder su referencia.</span></div><label class="admin-search-label">Buscar <input id="admin-filtro" type="search" placeholder="Nombre, referencia o categoría…" autocomplete="off"></label></div>
+    <p id="admin-action-message" class="admin-feedback" role="status" aria-live="polite"></p><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Prenda</th><th>Referencia</th><th>Precio (COP)</th><th>Tallas</th><th>Acciones</th></tr></thead><tbody>
+      <% products.forEach(function(p){ %>
+        <tr data-has-price="<%= Number.isFinite(p.precio) ? 1 : 0 %>" data-has-sizes="<%= p.tallas?.length ? 1 : 0 %>" data-search="<%= (p.nombre+' '+p.id+' '+p.categoria).toLowerCase() %>"><td><div class="admin-product-name"><img src="<%= p.imagen %>" alt="" width="60" height="69"><div><strong><%= p.nombre %></strong><span><%= p.categoria %></span></div></div></td><td><code><%= p.id.toUpperCase() %></code></td><td><% if(Number.isFinite(p.precio)){ %><%= money(p.precio) %><% } else { %><span class="admin-no-price">Por consultar</span><% } %></td><td><%= p.tallas?.length ? p.tallas.join(' · ') : 'Por confirmar' %></td><td><a class="admin-edit" href="/products/<%= encodeURIComponent(p.id) %>/edit">Editar ↗</a><button type="button" class="admin-delete" data-delete-id="<%= p.id %>" data-delete-name="<%= p.nombre %>">Eliminar</button></td></tr>
+      <% }) %>
+    </tbody></table></div>
+    <p id="admin-no-results" hidden>No hay resultados para esa búsqueda.</p>
+  </section>
+  <p class="admin-security-note">Panel de demostración académica protegido con credenciales. Antes de publicar, habilita HTTPS, almacenamiento persistente, copias de seguridad y control de acceso empresarial.</p>
+</main>
+<%- include('../partials/footer') %>

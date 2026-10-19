@@ -1,0 +1,98 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main id="contenido" class="shell checkout-shell">
+    <div class="checkout-topline"><span>VISAGSHOP / CHECKOUT</span><span>COLECCIÓN URBANA · COLOMBIA</span></div>
+    <div class="checkout-grid">
+      <div class="checkout-form-column">
+        <div class="checkout-intro"><span class="checkout-label"><i></i> ESTÁS A UN PASO</span><h1>Tu próximo look,<br><em>casi es tuyo.</em></h1><p>Completa tus datos y elige cómo quieres pagar. Te ayudaremos a confirmar la disponibilidad y el envío por WhatsApp.</p></div>
+        <form id="checkout-form" novalidate>
+          <section class="checkout-step" aria-labelledby="titulo-contacto">
+            <div class="checkout-step-title"><span class="step-circle" aria-hidden="true">01</span><div><h2 id="titulo-contacto">Contacto</h2><p>¿Cómo podemos comunicarnos contigo?</p></div></div>
+            <div class="checkout-fields-grid">
+              <label class="input-label full">Correo electrónico <span class="input-optional">(opcional)</span><input type="email" name="email" autocomplete="email" maxlength="120" placeholder="tunombre@correo.com" value="<%= customer?.email || '' %>"></label>
+            </div>
+            <p class="input-help">El pedido se coordina por WhatsApp. No enviamos confirmaciones por correo automáticamente.</p>
+          </section>
+          <section class="checkout-step" aria-labelledby="titulo-entrega">
+            <div class="checkout-step-title"><span class="step-circle" aria-hidden="true">02</span><div><h2 id="titulo-entrega">Datos de entrega</h2><p>La información necesaria para preparar tu pedido.</p></div></div>
+            <div class="checkout-fields-grid">
+              <label class="input-label full">País / región<select name="pais" aria-label="País de entrega"><option value="Colombia">Colombia</option></select></label>
+              <label class="input-label">Nombre <span class="required">*</span><input name="nombre" autocomplete="given-name" required maxlength="65" placeholder="Tu nombre" value="<%= customer?.firstName || '' %>"></label>
+              <label class="input-label">Apellidos <span class="required">*</span><input name="apellidos" autocomplete="family-name" required maxlength="65" placeholder="Tus apellidos" value="<%= customer?.lastName || '' %>"></label>
+              <label class="input-label full">Documento de identidad <span class="input-optional">(opcional, solo si lo requiere el envío)</span><input name="documento" inputmode="numeric" maxlength="20" placeholder="Número de documento, si aplica"></label>
+              <label class="input-label full">Número de celular <span class="required">*</span><input type="tel" inputmode="tel" name="celular" autocomplete="tel" required minlength="7" maxlength="22" placeholder="Ej. 300 123 4567" value="<%= customer?.phone || '' %>"></label>
+              <label class="input-label full">Dirección de entrega <span class="required">*</span><input name="direccion" autocomplete="street-address" required maxlength="140" placeholder="Calle / Carrera, número y barrio"></label>
+              <label class="input-label full">Casa, apartamento o indicaciones <span class="input-optional">(opcional)</span><input name="complemento" autocomplete="address-line2" maxlength="140" placeholder="Interior, piso, referencias para llegar..."></label>
+              <label class="input-label">Ciudad / municipio <span class="required">*</span><input name="ciudad" autocomplete="address-level2" required maxlength="70" placeholder="Ej. Lebrija"></label>
+              <label class="input-label">Departamento <span class="required">*</span><select name="departamento" autocomplete="address-level1" required><option value="">Selecciona</option>
+                <option>Amazonas</option><option>Antioquia</option><option>Arauca</option><option>Atlántico</option><option>Bogotá D. C.</option><option>Bolívar</option><option>Boyacá</option><option>Caldas</option><option>Caquetá</option><option>Casanare</option><option>Cauca</option><option>Cesar</option><option>Chocó</option><option>Córdoba</option><option>Cundinamarca</option><option>Guainía</option><option>Guaviare</option><option>Huila</option><option>La Guajira</option><option>Magdalena</option><option>Meta</option><option>Nariño</option><option>Norte de Santander</option><option>Putumayo</option><option>Quindío</option><option>Risaralda</option><option>San Andrés y Providencia</option><option>Santander</option><option>Sucre</option><option>Tolima</option><option>Valle del Cauca</option><option>Vaupés</option><option>Vichada</option>
+              </select></label>
+              <label class="input-label full">Código postal <span class="input-optional">(opcional)</span><input name="postal" autocomplete="postal-code" inputmode="numeric" maxlength="12" placeholder="Ej. 680001"></label>
+            </div>
+          </section>
+          <section class="checkout-step" aria-labelledby="titulo-pago">
+            <div class="checkout-step-title"><span class="step-circle" aria-hidden="true">03</span><div><h2 id="titulo-pago">Método de pago</h2><p>Elige la opción que prefieras. Ningún cobro se realiza desde esta página.</p></div></div>
+            <fieldset class="checkout-payment-options"><legend class="sr-only">Selecciona un método de pago</legend>
+              <label class="checkout-pay-option checkout-pay-cod">
+                <input type="radio" name="medio-pago" value="contraentrega" checked>
+                <span class="checkout-pay-radio" aria-hidden="true"></span>
+                <span class="checkout-pay-content"><strong>Pagar al recibir</strong><span>Paga tus prendas y el envío al recibir el pedido.</span><small>CONTRAENTREGA · SUJETO A COBERTURA</small></span>
+                <span class="checkout-pay-icon" aria-hidden="true">↗</span>
+              </label>
+              <label class="checkout-pay-option checkout-pay-nequi">
+                <input type="radio" name="medio-pago" value="nequi">
+                <span class="checkout-pay-radio" aria-hidden="true"></span>
+                <span class="checkout-pay-content"><strong>Pago anticipado con Nequi</strong><span>Te compartiremos los datos de pago oficiales por WhatsApp.</span><small>PAGO POR CONFIRMAR</small></span>
+                <span class="checkout-pay-badge">ENVÍO GRATIS*</span>
+              </label>
+              <label class="checkout-pay-option checkout-pay-card">
+                <input type="radio" name="medio-pago" value="tarjeta">
+                <span class="checkout-pay-radio" aria-hidden="true"></span>
+                <span class="checkout-pay-content"><strong>Pago anticipado con tarjeta</strong><span>La tienda te enviará un enlace de pago seguro.</span><small>NO INGRESES DATOS BANCARIOS AQUÍ</small></span>
+                <span class="checkout-pay-badge">ENVÍO GRATIS*</span>
+              </label>
+            </fieldset>
+            <p class="checkout-shipping-note" id="nota-envio">*El envío gratis para pagos anticipados depende de la cobertura y condiciones que confirme VisagShop. La contraentrega también está sujeta a disponibilidad.</p>
+          </section>
+          <section class="checkout-step checkout-step-billing" aria-labelledby="titulo-facturacion">
+            <div class="checkout-step-title"><span class="step-circle" aria-hidden="true">04</span><div><h2 id="titulo-facturacion">Dirección para facturación</h2><p>Indica si necesitas usar una dirección distinta.</p></div></div>
+            <div class="checkout-billing-options" role="radiogroup" aria-label="Dirección para facturación">
+              <label><input type="radio" name="facturacion" value="misma" checked> La misma dirección de entrega</label>
+              <label><input type="radio" name="facturacion" value="diferente"> Usar una dirección diferente</label>
+            </div>
+            <div class="checkout-fields-grid billing-fields" id="billing-fields" hidden>
+              <label class="input-label full">Dirección para facturación <span class="required">*</span><input name="fact_direccion" maxlength="140" placeholder="Dirección de facturación"></label>
+              <label class="input-label">Ciudad <span class="required">*</span><input name="fact_ciudad" maxlength="70" placeholder="Ciudad"></label>
+              <label class="input-label">Departamento <span class="required">*</span><input name="fact_departamento" maxlength="70" placeholder="Departamento"></label>
+            </div>
+          </section>
+          <div class="checkout-complete">
+            <button type="submit" class="checkout-confirm" id="confirmar-pedido" disabled>CONFIRMAR PEDIDO POR WHATSAPP <span aria-hidden="true">↗</span></button>
+            <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.6 8.9 8 11 4.4-2.1 8-6 8-11V5l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg> Revisaremos disponibilidad, envío y pago por WhatsApp antes de confirmar la compra. Esta página no procesa pagos.</p>
+          </div>
+        </form>
+      </div>
+      <aside class="checkout-side" aria-labelledby="titulo-resumen">
+        <div class="checkout-order-card" id="productos-pedido">
+          <div class="order-top"><div><span class="order-eyebrow">TU SELECCIÓN</span><h2 id="titulo-resumen">Resumen del pedido <span id="cantidad-articulos" aria-live="polite"></span></h2></div><a href="/#catalogo" class="order-edit-link">Seguir comprando ↗</a></div>
+          <div id="lineas" aria-live="polite" class="checkout-cart-items"><p class="checkout-loading">Cargando productos...</p></div>
+          <div id="resumen" class="checkout-totals" aria-live="polite"></div>
+        </div>
+        <div class="checkout-benefits">
+          <div><span class="benefit-symbol">↗</span><p><strong>Enviamos a Colombia</strong><small>Cobertura y costo sujetos a confirmación.</small></p></div>
+          <div><span class="benefit-symbol">◎</span><p><strong>Atención personalizada</strong><small>Revisamos tu pedido contigo por WhatsApp.</small></p></div>
+          <div><span class="benefit-symbol">◇</span><p><strong>Compra a tu manera</strong><small>Contraentrega, Nequi o tarjeta mediante enlace.</small></p></div>
+        </div>
+        <div class="checkout-photo-panel"><h3>Ficha de tu pedido con fotos</h3><p>Genera una imagen con las prendas, referencias y tallas para adjuntarla al chat.</p><button type="button" id="ficha-fotos" disabled>CREAR FICHA CON FOTOS <span aria-hidden="true">↗</span></button></div>
+      </aside>
+    </div>
+  </main>
+
+
+  <div class="checkout-modal" id="checkout-message-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="checkout-modal-backdrop" data-close-modal></div>
+    <div class="checkout-modal-panel"><button type="button" class="modal-close" data-close-modal aria-label="Cerrar ventana">×</button><span class="order-eyebrow">CONFIRMACIÓN POR WHATSAPP</span><h2 id="modal-title">Tu pedido está preparado.</h2><p>Para que WhatsApp abra directamente el chat de la tienda con el texto completo, falta configurar el número oficial de VisagShop. Mientras tanto, copia el pedido y pégalo en la conversación.</p><textarea id="mensaje-whatsapp" rows="7" readonly aria-label="Texto del pedido"></textarea><button class="checkout-confirm" id="copiar-pedido" type="button">COPIAR TEXTO DEL PEDIDO ↗</button><a id="abrir-wa" class="checkout-secondary-button" href="https://wa.me/message/MWVYODQ6ZZILP1" target="_blank" rel="noopener noreferrer">ABRIR CHAT DE VISAGSHOP ↗</a></div>
+  </div>
+  
+
+<%- include("../partials/footer") %>
